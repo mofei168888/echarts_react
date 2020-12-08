@@ -115,7 +115,6 @@ class Game extends React.Component {
 
         const current = this.state.history[index];
         const winner = calculateWinner(current.squares);
-        console.log(winner);
         if (winner.name) {
             this.setState({
                 winner: calculateWinner(current.squares).lines,
@@ -148,8 +147,12 @@ class Game extends React.Component {
 
         // 计算胜利者
         let status;
+        let end = current.squares.filter((item) => item === null);
+
         if (winner.name) {
             status = 'Winner: ' + winner.name;
+        } else if (end.length === 0) {
+            status = 'The game has drawn';
         } else {
             status = 'Next player: ' + (current.xIsNext ? 'X' : 'O');
         }
