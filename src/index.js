@@ -11,30 +11,29 @@ function Square(props) {
 }
 
 class Board extends React.Component {
-    renderSquare(i) {
-        return <Square value={this.props.squares[i]} onClick={() => this.props.onClick(i)} />;
+    renderSquare(i, layout) {
+        return <Square value={this.props.squares[i]} onClick={() => this.props.onClick(i, layout)} />;
     }
 
     render() {
-        return (
-            <div>
-                <div className="board-row">
-                    {this.renderSquare(0)}
-                    {this.renderSquare(1)}
-                    {this.renderSquare(2)}
+        let number = 0;
+        let rowArr = Array(3).fill(null);
+        let colArr = Array(3).fill(null);
+
+        const row = rowArr.map((rowItem, rowIndex) => {
+            const col = colArr.map((colItem, colIndex) => {
+                number++;
+                return <span key={number}>{this.renderSquare(number - 1, { row: rowIndex + 1, col: colIndex + 1 })}</span>;
+            });
+
+            return (
+                <div className="board-row" key={rowIndex}>
+                    {col}
                 </div>
-                <div className="board-row">
-                    {this.renderSquare(3)}
-                    {this.renderSquare(4)}
-                    {this.renderSquare(5)}
-                </div>
-                <div className="board-row">
-                    {this.renderSquare(6)}
-                    {this.renderSquare(7)}
-                    {this.renderSquare(8)}
-                </div>
-            </div>
-        );
+            );
+        });
+
+        return row;
     }
 }
 
@@ -45,53 +44,115 @@ class Game extends React.Component {
         this.state = {
             history: [
                 {
+                    id: (Math.random() * 10000).toFixed(0),
                     squares: Array(9).fill(null),
+                    layout: { row: null, col: null },
                 },
             ],
-            stepNumber: 0,
             xIsNext: true,
+            sort: 'desc',
+            id: null,
         };
     }
 
-    handleClick(i) {
-        const history = this.state.history.slice(0, this.state.stepNumber + 1);
-        const current = history[history.length - 1];
+    handleClick(i, layout) {
+        let number = 0;
+
+        this.state.history.map((item, index) => {
+            if (item.id === this.state.id) {
+                number = index;
+            }
+
+            return item;
+        });
+
+        let history = this.state.history.slice(0, number + 1);
+
+        const current = this.state.sort === 'asc' ? history[history.length - 1] : history[0];
         const squares = current.squares.slice();
         if (calculateWinner(squares) || squares[i]) {
             return;
         }
         squares[i] = this.state.xIsNext ? 'X' : 'O';
-        this.setState({
-            history: history.concat([
+        let id = (Math.random() * 10000).toFixed(0);
+
+        if (this.state.sort === 'asc') {
+            history = history.concat([
                 {
+                    id: id,
                     squares: squares,
+                    layout: layout,
                 },
-            ]),
-            stepNumber: history.length,
+            ]);
+        } else {
+            history = [
+                {
+                    id: id,
+                    squares: squares,
+                    layout: layout,
+                },
+            ].concat(history);
+        }
+
+        this.setState({
+            history: history,
             xIsNext: !this.state.xIsNext,
+            id: id,
         });
     }
 
-    jumpTo(step) {
+    jumpTo(id) {
+        let number = 0;
+
+        this.state.history.map((item, index) => {
+            if (item.id === id) {
+                number = index;
+            }
+
+            return item;
+        });
+
         this.setState({
-            stepNumber: step,
-            xIsNext: step % 2 === 0,
+            xIsNext: number % 2 === 0,
+            id: id,
+        });
+    }
+
+    sort(direction) {
+        this.setState({
+            sort: direction,
         });
     }
 
     render() {
-        const history = this.state.history;
-        const current = history[this.state.stepNumber];
+        let history = this.state.history.slice();
+
+        history = this.state.sort === 'asc' ? history : history.reverse();
+
+        let number = 0;
+
+        history.map((item, index) => {
+            if (item.id === this.state.id) {
+                number = index;
+            }
+
+            return item;
+        });
+
+        const current = history[number];
         const winner = calculateWinner(current.squares);
 
-        const moves = history.map((step, move) => {
-            const desc = move ? 'Go to move #' + move : 'Go to game start';
-            return (
-                <li key={move}>
-                    <button onClick={() => this.jumpTo(move)}>{desc}</button>
-                </li>
-            );
-        });
+        // const moves = history.map((step, move) => {
+        //     let index = this.state.sort === 'asc' ? move : history.length - move - 1;
+        //     const desc = 'Go to move #' + (index + 1);
+        //     return (
+        //         <li key={step.id}>
+        //             <button onClick={() => this.jumpTo(step.id)} className={[this.state.id === step.id ? 'to__active' : '']}>
+        //                 {desc} row:{step.layout.row} col:{step.layout.col} id:{step.id}
+        //             </button>
+        //         </li>
+        //     );
+        // });
 
         let status;
         if (winner) {
@@ -100,14 +161,22 @@ class Game extends React.Component {
             status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
         }
 
+        let sort = (
+            <div>
+                <button onClick={() => this.sort('asc')}>升序</button>
+                <button onClick={() => this.sort('desc')}>降序</button>
+            </div>
+        );
+
         return (
             <div className="game">
                 <div className="game-board">
-                    <Board squares={current.squares} onClick={(i) => this.handleClick(i)} />
+                    <Board squares={current.squares} onClick={(i, layout) => this.handleClick(i, layout)} />
                 </div>
                 <div className="game-info">
                     <div>{status}</div>
-                    <ol>{moves}</ol>
+                    {sort}
+                    {/* <div>{moves}</div> */}
                 </div>
             </div>
         );
