@@ -47,16 +47,25 @@ class Game extends React.Component {
                     id: (Math.random() * 10000).toFixed(0),
                     squares: Array(9).fill(null),
                     layout: { row: null, col: null },
+                    xIsNext: true,
                 },
             ],
-            xIsNext: true,
             sort: 'asc',
             id: null,
         };
     }
 
     handleClick(i, layout) {
-        let history = this.state.history.slice();
+        let activeIndex = 0;
+        this.state.history.map((item, index) => {
+            if (item.id === this.state.id) {
+                activeIndex = index;
+            }
+
+            return item;
+        });
+
+        let history = this.state.history.slice(0, activeIndex + 1);
 
         const current = history[history.length - 1];
 
@@ -64,7 +73,7 @@ class Game extends React.Component {
         if (calculateWinner(squares) || squares[i]) {
             return;
         }
-        squares[i] = this.state.xIsNext ? 'X' : 'O';
+        squares[i] = current.xIsNext ? 'X' : 'O';
         let id = (Math.random() * 10000).toFixed(0);
 
         history = history.concat([
@@ -72,12 +81,12 @@ class Game extends React.Component {
                 id: id,
                 squares: squares,
                 layout: layout,
+                xIsNext: !current.xIsNext,
             },
         ]);
 
         this.setState({
             history: history,
-            xIsNext: !this.state.xIsNext,
             id: id,
         });
     }
@@ -114,7 +123,7 @@ class Game extends React.Component {
         if (winner) {
             status = 'Winner: ' + winner;
         } else {
-            status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
+            status = 'Next player: ' + (current.xIsNext ? 'X' : 'O');
         }
 
         // 按钮
