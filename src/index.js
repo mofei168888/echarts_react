@@ -50,7 +50,7 @@ class Game extends React.Component {
                 },
             ],
             xIsNext: true,
-            sort: 'desc',
+            sort: 'asc',
             id: null,
         };
     }
@@ -95,7 +95,18 @@ class Game extends React.Component {
     }
 
     render() {
-        const current = this.state.history[this.state.history.length - 1];
+        let activeIndex = null;
+        this.state.history.map((item, index) => {
+            if (item.id === this.state.id) {
+                activeIndex = index;
+            }
+
+            return item;
+        });
+
+        let index = activeIndex === null ? this.state.history.length - 1 : activeIndex;
+
+        const current = this.state.history[index];
         const winner = calculateWinner(current.squares);
 
         // 计算胜利者
