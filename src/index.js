@@ -19,13 +19,11 @@ class Board extends React.Component {
 
     render() {
         let arr = Array(9).fill(null);
-        let span = arr.map((item, index) => {
-            return (
-                <div className="board-item" key={index}>
-                    {this.renderSquare(index, { row: Math.floor(index / 3) + 1, col: (index % 3) + 1 })}
-                </div>
-            );
-        });
+        let span = arr.map((item, index) => (
+            <div className="board-item" key={index}>
+                {this.renderSquare(index, { row: Math.floor(index / 3) + 1, col: (index % 3) + 1 })}
+            </div>
+        ));
 
         return span;
     }
@@ -43,7 +41,7 @@ class Game extends React.Component {
     }
 
     handleClick(i, layout) {
-        let index = calcIndex(this.state.history, this.state.id);
+        let index = calcIndex(this.state.history, this.state.id); // 获取历史记录索引值
         let history = this.state.history.slice(0, index + 1); // 历史记录截取
         let current = history[history.length - 1]; // 获取当前版本
         let squares = current.squares.slice();
