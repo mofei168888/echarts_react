@@ -44,58 +44,40 @@ class Game extends React.Component {
         super(props);
 
         this.state = {
-            history: [
-                {
-                    id: (Math.random() * 10000).toFixed(0),
-                    squares: Array(9).fill(null),
-                    layout: { row: null, col: null },
-                    xIsNext: true,
-                },
-            ],
+            history: [newVersion()],
             sort: 'asc',
             id: null,
-            winner: [],
         };
     }
 
     handleClick(i, layout) {
-        let activeIndex = 0;
-        this.state.history.map((item, index) => {
-            if (item.id === this.state.id) {
-                activeIndex = index;
-            }
+        let index = calcIndex(this.state.history, this.state.id);
 
-            return item;
-        });
-
-        let history = this.state.history.slice(0, activeIndex + 1);
+        let history = this.state.history.slice(0, index + 1);
 
         const current = history[history.length - 1];
 
         const squares = current.squares.slice();
-        if (this.calculateWinner(squares).name || squares[i]) {
+        if (calculateWinner(squares).name || squares[i]) {
             return;
         }
 
         squares[i] = current.xIsNext ? 'X' : 'O';
+
         let id = (Math.random() * 10000).toFixed(0);
 
-        history = history.concat([
-            {
-                id: id,
-                squares: squares,
-                layout: layout,
-                xIsNext: !current.xIsNext,
-            },
-        ]);
+        let version = newVersion({
+            id: id,
+            squares: squares,
+            layout: layout,
+            xIsNext: !current.xIsNext,
+        });
+
+        history = history.concat(version);
 
         this.setState({
             history: history,
             id: id,
-        });
-
-        this.setState({
-            winner: this.calculateWinner(squares).lines,
         });
     }
 
@@ -104,25 +86,16 @@ class Game extends React.Component {
             id: id,
         });
 
-        let activeIndex = null;
-        this.state.history.map((item, index) => {
-            if (item.id === id) {
-                activeIndex = index;
-            }
+        let current = getVersion(this.state.history, id);
 
-            return item;
-        });
+        let winner = calculateWinner(current.squares);
 
-        let index = activeIndex === null ? this.state.history.length - 1 : activeIndex;
-
-        const current = this.state.history[index];
-        const winner = this.calculateWinner(current.squares);
         if (winner.name) {
             this.setState({
-                winner: this.calculateWinner(current.squares).lines,
+                winner: calculateWinner(current.squares),
             });
         } else {
-            this.setState({ winner: [] });
+            this.setState({ winner: { name: '', lines: [] } });
         }
     }
 
@@ -132,62 +105,13 @@ class Game extends React.Component {
         });
     }
 
-    calculateWinner(squares) {
-        const lines = [
-            [0, 1, 2],
-            [3, 4, 5],
-            [6, 7, 8],
-            [0, 3, 6],
-            [1, 4, 7],
-            [2, 5, 8],
-            [0, 4, 8],
-            [2, 4, 6],
-        ];
-        for (let i = 0; i < lines.length; i++) {
-            const [a, b, c] = lines[i];
-            if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-                return { name: squares[a], lines: lines[i] };
-            }
-        }
-        return { name: null, lines: [] };
-    }
-
     render() {
-        let activeIndex = null;
-        this.state.history.map((item, index) => {
-            if (item.id === this.state.id) {
-                activeIndex = index;
-            }
+        let current = getVersion(this.state.history, this.state.id);
 
-            return item;
-        });
+        let winner = calculateWinner(current.squares);
 
-        let index = activeIndex === null ? this.state.history.length - 1 : activeIndex;
+        let status = calcText(current, winner);
 
-        const current = this.state.history[index];
-        const winner = this.calculateWinner(current.squares);
-
-        // 计算胜利者
-        let status;
-        let end = current.squares.filter((item) => item === null);
-
-        if (winner.name) {
-            status = 'Winner: ' + winner.name;
-        } else if (end.length === 0) {
-            status = 'The game has drawn';
-        } else {
-            status = 'Next player: ' + (current.xIsNext ? 'X' : 'O');
-        }
-
-        // 按钮
-        let sort = (
-            <div>
-                <button onClick={() => this.sort('asc')}>升序</button>
-                <button onClick={() => this.sort('desc')}>降序</button>
-            </div>
-        );
-
-        // 历史记录列表
         let history = this.state.history.slice();
         history = this.state.sort === 'asc' ? history : history.reverse();
 
@@ -209,11 +133,14 @@ class Game extends React.Component {
             <div className="game">
                 <div className="game-board">
                     <Board squares={current.squares} onClick={(i, layout) => this.handleClick(i, layout)} />
-                    <div className={`lines-${this.state.winner.join('')}`}></div>
+                    <div className={`lines-${winner.lines.join('')}`}></div>
                 </div>
                 <div className="game-info">
                     <div>{status}</div>
-                    {sort}
+                    <div>
+                        <button onClick={() => this.sort('asc')}>升序</button>
+                        <button onClick={() => this.sort('desc')}>降序</button>
+                    </div>
                     <div>{moves}</div>
                 </div>
             </div>
@@ -224,3 +151,70 @@ class Game extends React.Component {
 // ========================================
 
 ReactDOM.render(<Game />, document.getElementById('root'));
+
+// 根据id计算当前历史记录索引值
+function calcIndex(history, id) {
+    let ids = history.map((item) => item.id);
+    let activeIndex = ids.indexOf(id);
+
+    let index = activeIndex === -1 ? history.length - 1 : activeIndex;
+
+    return index;
+}
+
+// 计算胜利者
+function calculateWinner(squares) {
+    let res = { name: null, lines: [] };
+
+    const lines = [
+        [0, 1, 2],
+        [3, 4, 5],
+        [6, 7, 8],
+        [0, 3, 6],
+        [1, 4, 7],
+        [2, 5, 8],
+        [0, 4, 8],
+        [2, 4, 6],
+    ];
+
+    lines.map((item) => {
+        let [a, b, c] = item;
+
+        if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
+            res = { name: squares[a], lines: item };
+        }
+
+        return item;
+    });
+
+    return res;
+}
+
+// 结算信息
+function calcText(current, winner) {
+    let end = current.squares.filter((item) => item === null);
+
+    let status = 'Next player: ' + (current.xIsNext ? 'X' : 'O');
+
+    status = winner.name ? 'Winner: ' + winner.name : end.length === 0 ? 'The game has drawn' : status;
+
+    return status;
+}
+
+// 根据id获取当前版本对象
+function getVersion(history, id) {
+    let index = calcIndex(history, id);
+    let current = history[index];
+
+    return current;
+}
+
+// 实例化一个版本对象
+function newVersion(param = {}) {
+    return {
+        id: param.id || (Math.random() * 10000).toFixed(0),
+        squares: param.squares || Array(9).fill(null),
+        layout: param.layout || { row: null, col: null },
+        xIsNext: param.hasOwnProperty('xIsNext') ? param.xIsNext : true,
+    };
+}
