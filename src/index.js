@@ -57,28 +57,27 @@ class Game extends React.Component {
 
         const current = history[history.length - 1];
 
-        const squares = current.squares.slice();
-        if (calculateWinner(squares).name || squares[i]) {
-            return;
+        let squares = current.squares.slice();
+
+        let winner = calculateWinner(squares);
+
+        if (!winner.name && !squares[i]) {
+            squares[i] = current.xIsNext ? 'X' : 'O';
+
+            let id = (Math.random() * 10000).toFixed(0);
+
+            let version = newVersion({
+                id: id,
+                squares: squares,
+                layout: layout,
+                xIsNext: !current.xIsNext,
+            });
+
+            this.setState({
+                history: history.concat(version),
+                id: id,
+            });
         }
-
-        squares[i] = current.xIsNext ? 'X' : 'O';
-
-        let id = (Math.random() * 10000).toFixed(0);
-
-        let version = newVersion({
-            id: id,
-            squares: squares,
-            layout: layout,
-            xIsNext: !current.xIsNext,
-        });
-
-        history = history.concat(version);
-
-        this.setState({
-            history: history,
-            id: id,
-        });
     }
 
     jumpTo(id) {
