@@ -29,3 +29,4 @@
 -   state：`不能够直接更改state的值，必须使用this.setState(),否则无法进行render更新`
 -   生命周期：`componentDidMount（挂载），componentWillUnmount（取消挂载）。生命周期顺序：constructor -> render -> componentDidMount`
 -   属性传参：`字符串使用双引号""，变量使用花括号{}`
+-   this 指向：`onClick事件使用箭头函数执行函数，否则函数内的this为undefined`
