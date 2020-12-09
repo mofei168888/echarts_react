@@ -24,7 +24,8 @@
 ### 关键词
 
 -   JSX：`JS的扩展，在JS语法中使用HTML标签`
--   组件：`分为函数组件、class 组件，复杂的组件或可复用的组件要进行提取`
+-   组件：`分为函数组件、class 组件，复杂的组件或可复用的组件要进行提取。命名必须为大写驼峰，小写将被识别为HTML元素`
 -   props：`不能够直接修改父组件传入的props值。必须遵守单向数据流`
 -   state：`不能够直接更改state的值，必须使用this.setState(),否则无法进行render更新`
 -   生命周期：`componentDidMount（挂载），componentWillUnmount（取消挂载）。生命周期顺序：constructor -> render -> componentDidMount`
+-   属性传参：`字符串使用双引号""，变量使用花括号{}`
