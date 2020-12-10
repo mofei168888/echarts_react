@@ -34,3 +34,4 @@
 -   组合：`即Vue中的slot插槽，使用props.children可以展示组件标签的内容。如果要使用多个slot，则使用props自定义命名传入组件`
 -   模块异步加载：`使用React.lazy进行模块异步加载`
 -   Context：`上下文，即Vue中的inject、provide`
+-   错误边界：`错误边界仅可以捕获其子组件的错误，它无法捕获其自身的错误`
