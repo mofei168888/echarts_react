@@ -33,3 +33,4 @@
 -   条件渲染：`利用&&与运算符或者三目运算符可以简写if语句, class组件render中返回null，不渲染组件`
 -   组合：`即Vue中的slot插槽，使用props.children可以展示组件标签的内容。如果要使用多个slot，则使用props自定义命名传入组件`
 -   模块异步加载：`使用React.lazy进行模块异步加载`
+-   Context：`上下文，即Vue中的inject、provide`
