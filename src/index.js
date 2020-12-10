@@ -6,8 +6,9 @@ import ReactDOM from 'react-dom';
 // import Router from './router/index.js'; // 模块异步加载
 // import Context from './context/index.js'; // 上下文（即Vue中的inject、provide）
 // import ErrorBoundary from './error-boundary/index.js'; // 错误边界
-import Refs from './refs/index.js'; // Refs转发
+// import Refs from './refs/index.js'; // Refs转发
+import Fragments from './fragments/index.js'; // Fragments 分组(组件内不在固定只有一个根节点)
 
 // ========================================
 
-ReactDOM.render(Refs, document.getElementById('root'));
+ReactDOM.render(Fragments, document.getElementById('root'));
