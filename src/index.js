@@ -7,10 +7,11 @@ import ReactDOM from 'react-dom';
 // import Context from './context/index.js'; // 上下文（即Vue中的inject、provide）
 // import ErrorBoundary from './error-boundary/index.js'; // 错误边界
 // import Refs from './refs/index.js'; // Refs转发
-import Fragments from './fragments/index.js'; // Fragments 分组(组件内不在固定只有一个根节点)
+// import Fragments from './fragments/index.js'; // Fragments 分组(组件内不在固定只有一个根节点)
 // import Hoc from './hoc/index.js'; // 高阶组件
 // import ThreeOperator from './three-operator/index.js'; // 展开运算符
+import ShouldComponentUpdate from './should-component-update/index.js'; // 渲染提速
 
 // ========================================
 
-ReactDOM.render(Fragments, document.getElementById('root'));
+ReactDOM.render(ShouldComponentUpdate, document.getElementById('root'));
