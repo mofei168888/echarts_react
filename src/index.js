@@ -11,6 +11,7 @@ import ReactDOM from 'react-dom';
 // import Hoc from './hoc/index.js'; // 高阶组件
 // import ThreeOperator from './three-operator/index.js'; // 展开运算符
 import ShouldComponentUpdate from './should-component-update/index.js'; // 渲染提速
+// import Portals from './portals/index.js'; // Portals 跳出父级容器
 
 // ========================================
 
