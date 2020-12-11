@@ -10,9 +10,10 @@ import ReactDOM from 'react-dom';
 // import Fragments from './fragments/index.js'; // Fragments 分组(组件内不在固定只有一个根节点)
 // import Hoc from './hoc/index.js'; // 高阶组件
 // import ThreeOperator from './three-operator/index.js'; // 展开运算符
-import ShouldComponentUpdate from './should-component-update/index.js'; // 渲染提速
+// import ShouldComponentUpdate from './should-component-update/index.js'; // 渲染提速
 // import Portals from './portals/index.js'; // Portals 跳出父级容器
+import Profiler from './profiler/index.js'; // Profiler 渲染测量
 
 // ========================================
 
-ReactDOM.render(ShouldComponentUpdate, document.getElementById('root'));
+ReactDOM.render(Profiler, document.getElementById('root'));
