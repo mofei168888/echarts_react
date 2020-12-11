@@ -11,4 +11,10 @@ class Columns extends React.Component {
     }
 }
 
+// class Columns extends React.Component {
+//     render() {
+//         return [<div key="A">Hello</div>, <div key="B">World</div>];
+//     }
+// }
+
 export default <Columns />;
