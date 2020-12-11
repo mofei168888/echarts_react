@@ -8,8 +8,9 @@ import ReactDOM from 'react-dom';
 // import ErrorBoundary from './error-boundary/index.js'; // 错误边界
 // import Refs from './refs/index.js'; // Refs转发
 // import Fragments from './fragments/index.js'; // Fragments 分组(组件内不在固定只有一个根节点)
-import Hoc from './hoc/index.js'; // 高阶组件
+// import Hoc from './hoc/index.js'; // 高阶组件
+import ThreeOperator from './three-operator/index.js'; // 展开运算符
 
 // ========================================
 
-ReactDOM.render(Hoc, document.getElementById('root'));
+ReactDOM.render(ThreeOperator, document.getElementById('root'));
