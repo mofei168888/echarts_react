@@ -12,8 +12,9 @@ import ReactDOM from 'react-dom';
 // import ThreeOperator from './three-operator/index.js'; // 展开运算符
 // import ShouldComponentUpdate from './should-component-update/index.js'; // 渲染提速
 // import Portals from './portals/index.js'; // Portals 跳出父级容器
-import Profiler from './profiler/index.js'; // Profiler 渲染测量
+// import Profiler from './profiler/index.js'; // Profiler 渲染测量
+import Mixins from './mixins/index.js'; // mixins
 
 // ========================================
 
-ReactDOM.render(Profiler, document.getElementById('root'));
+ReactDOM.render(Mixins, document.getElementById('root'));
